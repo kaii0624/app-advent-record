@@ -593,24 +593,18 @@
       return card;
     }
 
-    function renderMonth(year, month) {
+    function renderAll() {
       cardList.innerHTML = "";
 
-      const monthPrefix = `${year}-${pad2(month + 1)}-`;
       const visibleEntries = entries
         .map((entry, index) => ({ ...entry, _index: index }))
-        .filter((entry) => entry.date.startsWith(monthPrefix))
         .sort((a, b) => a.date.localeCompare(b.date) || a._index - b._index);
 
       let firstOpenCard = null;
-      const currentMonthView = year === today.getFullYear() && month === today.getMonth();
-
       visibleEntries.forEach((entry, index) => {
         const card = buildCard(entry, index);
         cardList.appendChild(card);
-
-        const day = Number(entry.date.slice(-2));
-        if (!firstOpenCard && (!currentMonthView || day <= today.getDate())) {
+        if (!firstOpenCard) {
           firstOpenCard = card;
         }
       });
@@ -626,7 +620,7 @@
       }
     }
 
-    renderMonth(today.getFullYear(), today.getMonth());
+    renderAll();
   </script>
 </body>
 </html>
