@@ -320,6 +320,65 @@
       word-break: break-word;
     }
 
+    .thumb-showcase {
+      position: relative;
+      margin: 14px 0 0 86px;
+      height: 166px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      background:
+        radial-gradient(circle at top left, rgba(170, 205, 255, 0.34), transparent 44%),
+        radial-gradient(circle at bottom right, rgba(190, 240, 225, 0.26), transparent 46%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.22));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.85),
+        0 12px 30px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+
+    .thumb-showcase::after {
+      content: "";
+      position: absolute;
+      inset: auto 18px 14px 18px;
+      height: 30px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(90, 110, 150, 0.16), transparent 72%);
+      filter: blur(10px);
+    }
+
+    .thumb-card {
+      position: absolute;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .thumb-card.phone {
+      left: 14px;
+      bottom: 12px;
+      width: 80px;
+      height: 124px;
+      z-index: 2;
+    }
+
+    .thumb-card.desktop {
+      top: 20px;
+      right: 14px;
+      left: 72px;
+      height: 112px;
+    }
+
+    .thumb-card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .actions {
       margin-top: 12px;
       padding-left: 86px;
@@ -468,6 +527,18 @@
         title: "Bowlard",
         href: "./apps/bowlard/",
         kind: "game",
+        thumbs: [
+          {
+            src: "./articles/2026-02-12-bowlard/images/bowlard-phone.jpg",
+            alt: "Bowlard phone preview",
+            shape: "phone"
+          },
+          {
+            src: "./articles/2026-02-12-bowlard/images/bowlard-desktop.jpg",
+            alt: "Bowlard desktop preview",
+            shape: "desktop"
+          }
+        ],
         articleHref: "./articles/2026-02-12-bowlard/"
       },
       {
@@ -602,6 +673,27 @@
       desc.className = "desc";
       desc.textContent = entry.title;
       expand.appendChild(desc);
+
+      if (entry.thumbs?.length) {
+        const showcase = document.createElement("div");
+        showcase.className = "thumb-showcase";
+
+        entry.thumbs.forEach((thumb) => {
+          const frame = document.createElement("div");
+          frame.className = `thumb-card ${thumb.shape}`;
+
+          const image = document.createElement("img");
+          image.src = thumb.src;
+          image.alt = thumb.alt;
+          image.loading = "lazy";
+          image.decoding = "async";
+
+          frame.appendChild(image);
+          showcase.appendChild(frame);
+        });
+
+        expand.appendChild(showcase);
+      }
 
       const actions = document.createElement("div");
       actions.className = "actions";
