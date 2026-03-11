@@ -223,7 +223,7 @@
       font: inherit;
     }
 
-    .author-tag {
+    .entry-tag {
       font-family: "IBM Plex Mono", monospace;
       font-size: 9px;
       font-weight: 400;
@@ -236,16 +236,22 @@
       line-height: 1;
     }
 
-    .author-tag.ai {
-      background: linear-gradient(135deg, rgba(160, 130, 255, 0.13), rgba(100, 160, 255, 0.08));
-      border-color: rgba(150, 120, 255, 0.22);
-      color: rgba(110, 70, 210, 0.65);
+    .entry-tag.game {
+      background: linear-gradient(135deg, rgba(120, 180, 255, 0.16), rgba(120, 255, 220, 0.08));
+      border-color: rgba(80, 150, 255, 0.18);
+      color: rgba(40, 105, 180, 0.72);
     }
 
-    .author-tag.human {
-      background: rgba(255, 255, 255, 0.38);
-      border-color: rgba(0, 0, 0, 0.06);
-      color: rgba(0, 0, 0, 0.24);
+    .entry-tag.app {
+      background: linear-gradient(135deg, rgba(255, 196, 114, 0.2), rgba(255, 143, 143, 0.1));
+      border-color: rgba(224, 152, 67, 0.2);
+      color: rgba(170, 88, 22, 0.76);
+    }
+
+    .entry-tag.poc {
+      background: linear-gradient(135deg, rgba(183, 146, 255, 0.18), rgba(129, 157, 255, 0.1));
+      border-color: rgba(132, 111, 222, 0.18);
+      color: rgba(96, 73, 182, 0.76);
     }
 
     .card.locked .card-head {
@@ -461,54 +467,59 @@
         date: "2026-02-12",
         title: "Bowlard",
         href: "./apps/bowlard/",
+        kind: "game",
         articleHref: "./articles/2026-02-12-bowlard/"
       },
       {
         date: "2026-02-12",
         title: "Brick Blast",
         href: "./apps/2026-02-12-brick-blast/",
+        kind: "game",
         articleHref: "./articles/2026-02-12-brick-blast/"
       },
       {
         date: "2026-02-13",
         title: "Gravity Orbit Pinball",
         href: "./apps/2026-02-13-gravity-orbit-pinball/",
+        kind: "game",
         articleHref: "./articles/2026-02-13-gravity-orbit-pinball/"
       },
       {
         date: "2026-02-15",
         title: "Fusion Drop",
         href: "./apps/2026-02-15-fusion-drop/",
+        kind: "game",
         articleHref: "./articles/2026-02-15-fusion-drop/"
       },
       {
         date: "2026-02-22",
         title: "Vision Live Comments",
-        href: "./apps/2026-02-22-vision-live-comments/"
+        href: "./apps/2026-02-22-vision-live-comments/",
+        kind: "app"
       },
       {
         date: "2026-03-02",
         title: "Chiikawa Camera Raid",
         href: "./apps/2026-03-02-chiikawa-camera-raid/",
-        author: "ai"
+        kind: "game"
       },
       {
         date: "2026-03-05",
         title: "Moshi Voice Chat",
         href: "./apps/2026-03-05-moshi-voice-chat/",
-        author: "ai"
+        kind: "poc"
       },
       {
         date: "2026-03-07",
         title: "Network & Escape",
         href: "./apps/2026-03-07-network-escape/",
-        author: "ai"
+        kind: "game"
       },
       {
         date: "2026-03-10",
         title: "Care Lens",
         href: "https://care-lens-kaii-20260311.pages.dev/apps/2026-03-10-care-lens/",
-        author: "ai",
+        kind: "app",
         articleHref: "./articles/2026-03-10-care-lens/"
       }
     ];
@@ -575,8 +586,8 @@
       title.textContent = entry.title;
 
       const tag = document.createElement("span");
-      tag.className = `author-tag ${entry.author === "ai" ? "ai" : "human"}`;
-      tag.textContent = entry.author === "ai" ? "AI" : "Human";
+      tag.className = `entry-tag ${entry.kind}`;
+      tag.textContent = entry.kind.toUpperCase() === "POC" ? "PoC" : entry.kind.charAt(0).toUpperCase() + entry.kind.slice(1);
 
       const indicator = document.createElement("span");
       indicator.className = "indicator";
@@ -651,25 +662,15 @@
         .map((entry, index) => ({ ...entry, _index: index }))
         .sort((a, b) => a.date.localeCompare(b.date) || a._index - b._index);
 
-      const humanEntries = visibleEntries.filter((e) => e.author !== "ai");
-      const aiEntries = visibleEntries.filter((e) => e.author === "ai");
-
       let firstOpenCard = null;
       let cardIndex = 0;
-
-      function renderSection(sectionEntries, labelText) {
-        if (sectionEntries.length === 0) return;
-          sectionEntries.forEach((entry) => {
-          const card = buildCard(entry, cardIndex++);
-          cardList.appendChild(card);
-          if (!firstOpenCard) {
-            firstOpenCard = card;
-          }
-        });
-      }
-
-      renderSection(humanEntries, "Human-made");
-      renderSection(aiEntries, "AI-generated");
+      visibleEntries.forEach((entry) => {
+        const card = buildCard(entry, cardIndex++);
+        cardList.appendChild(card);
+        if (!firstOpenCard) {
+          firstOpenCard = card;
+        }
+      });
 
       if (!firstOpenCard && cardList.querySelector(".card")) {
         firstOpenCard = cardList.querySelector(".card");
